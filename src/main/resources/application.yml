@@ -1,1 +1,42 @@
+server:
+  port: 8080
 
+feign:
+  hystrix:
+    enabled: true
+  hystrix-service:
+    url: localhost:${server.port}
+
+logging:
+  level:
+    com:
+      muyun:
+        hystrixdemo:
+          client:
+            Client: debug
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 1000
+    Client#health(Integer):
+      circuitBreaker:
+        errorThresholdPercentage: 40
+        sleepWindowInMilliseconds: 5000
+        requestVolumeThreshold: 5
+      metrics:
+        rollingStats:
+          timeInMilliseconds: 10000
+          numBuckets: 10
+    Client#timeout():
+      circuitBreaker:
+        errorThresholdPercentage: 40
+        sleepWindowInMilliseconds: 5000
+        requestVolumeThreshold: 5
+      metrics:
+        rollingStats:
+          timeInMilliseconds: 10000
+          numBuckets: 10
