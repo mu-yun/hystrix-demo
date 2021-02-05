@@ -29,13 +29,22 @@ public class ClientFallbackFactory implements FallbackFactory<Client> {
 
             private String handleException(String methodKey) {
                 cause.printStackTrace();
-                String hystrixStatus = HystrixUtil.circuitBreakerIsOpen(methodKey) ? "open" : "close";
-                return "fallback<br>"
-                        + "hystrix status:" + hystrixStatus + "<br>"
-                        + "exception:" + cause.getClass().getName() + "<br>"
-                        + cause.getMessage();
+
+                String hystrixStatus = getHystrixStatus(methodKey);
+
+                return "fallback" + "<br>"
+                        + "hystrix status: " + hystrixStatus + "<br>"
+                        + "exception: " + cause.getClass().getName() + "<br>"
+                        + cause.getMessage() + "<br>";
             }
+
         };
 
     }
+
+    private String getHystrixStatus(String methodKey) {
+        String hystrixStatus = HystrixUtil.circuitBreakerIsOpen(methodKey) ? "open" : "close";
+        return hystrixStatus;
+    }
+
 }
